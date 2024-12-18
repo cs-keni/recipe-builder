@@ -1,0 +1,13 @@
+# node.js dependencies
+node_modules/
+
+# python virtual environment
+venv/
+
+# OS/editor-specific files
+.DS_Store
+*.swp
+*.swo
+
+# logs
+*.log
