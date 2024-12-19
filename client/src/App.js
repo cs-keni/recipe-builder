@@ -1,25 +1,35 @@
 import './App.css';
 import React, { useEffect, useState } from "react";
 import { fetchData } from "./api";
+import RecipeForm from "./components/RecipeForm";
+import RecipeList from "./components/RecipeList";
+import { getRecipes } from "./api";
 
 function App() {
-    const [message, setMessage] = useState("");
+    const [recipes, setRecipes] = useState([]);
 
     useEffect(() => {
-	async function getMessage() {
-	    const data = await fetchData();
-	    if (data) setMessage(data.message);
-	}
-	getMessage();
+	const fetchData = async () => {
+	    const data = await getRecipes();
+	    setRecipes(data);
+	};
+	fetchData();
     }, []);
+
+    const handleRecipeAdded = (newRecipe) => {
+	setRecipes([...recipes, newRecipe]);
+    };
+
+    const handleRecipeDeleted = (id) => {
+	setRecipes(recipes.filter((recipe) => recipe.id !== id));
+
     return (
-      <div className="App">
-	<header className="bg-blue-500 text-white text-center py-10">
-	  <h1 className="text-4xl font-bold">Recipe Builder</h1>
-	  <p className="mt-4">{message}</p>
-	</header>
-      </div>
-  );
+	<div>
+	  <h1>Recipe Builder</h1>
+	  <RecipeForm onRecipeAdded={handleRecipeAdded} />
+	  <RecipeList recipes={recipes} onRecipeDeleted={handleRecipeDeleted} />
+	</div>
+    );
 }
 
 export default App;
