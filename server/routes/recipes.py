@@ -1,6 +1,9 @@
 from flask import Blueprint, jsonify, request
 from server.models.recipe import Recipe
 from server.app import db
+from utils.ai import generate_recipe, fetch_recipes
+
+ai_bp = Blueprint("ai", __name__)
 
 recipes = Blueprint("recipes", __name__)
 
@@ -22,3 +25,17 @@ def delete_recipe(id):
     db.session.delete(recipe)
     db.session.commit()
     return "", 204
+
+@ai_bp.route("/generate-recipe", methods=["POST"])
+def generate():
+    data = request.json
+    ingredients = data.get("ingredients", [])
+    recipe = generate_recipe(ingredients)
+    return jsonify({"recipe": recipe})
+
+@ai_bp.route("/fetch-recipes", methods=["POST"])
+def fetch():
+    data = request.json
+    ingredients = data.get("ingredients", [])
+    recipes = fetch_recipes(ingredients)
+    return jsonify({"recipes": recipes})
