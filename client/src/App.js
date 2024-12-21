@@ -8,6 +8,7 @@ import Welcome from "./components/Welcome";
 import GenerateRecipeForm from "./components/GenerateRecipeForm";
 import RecipeSuggestions from "./components/RecipeSuggestions";
 import Auth from "./components/Auth";
+import Header from "./components/Header";
 
 function App() {
     const [recipes, setRecipes] = useState([]);
@@ -16,6 +17,7 @@ function App() {
     const [currentView, setCurrentView] = useState('welcome');
     const [isAnimating, setIsAnimating] = useState(false);
     const [user, setUser] = useState(null);
+    const [isDarkMode, setIsDarkMode] = useState(false);
 
     useEffect(() => {
         if (currentView === 'main') {
@@ -52,6 +54,11 @@ function App() {
 
     const handleRecipeDeleted = (id) => {
         setRecipes(recipes.filter((recipe) => recipe.id !== id));
+    };
+
+    const handleLogout = () => {
+        setUser(null);
+        setCurrentView('auth');
     };
 
     return (
@@ -102,7 +109,14 @@ function App() {
                         animate={{ opacity: 1, x: 0 }}
                         exit={{ opacity: 0, x: '100%' }}
                         transition={{ duration: 0.5, ease: "easeInOut" }}
+                        className={isDarkMode ? 'bg-gray-900' : 'bg-gray-100'}
                     >
+                        <Header 
+                            user={user}
+                            onLogout={handleLogout}
+                            isDarkMode={isDarkMode}
+                            onToggleDarkMode={() => setIsDarkMode(!isDarkMode)}
+                        />
                         <div className="min-h-screen bg-gray-100">
                             <nav className="bg-white shadow-lg">
                                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">

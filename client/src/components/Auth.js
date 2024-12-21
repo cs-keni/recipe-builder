@@ -31,7 +31,10 @@ function Auth({ onLogin }) {
             console.log('Response:', data);
             
             if (response.ok) {
-                onLogin(data.user);
+                onLogin({
+                    ...data.user,
+                    name: data.user.name || formData.name
+                });
             } else {
                 setError(data.message || 'Authentication failed');
             }
