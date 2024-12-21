@@ -1,6 +1,7 @@
 from flask import Flask, jsonify
 from flask_cors import CORS
 from database import db
+from routes.recipes import recipes, ai_bp
 
 app = Flask(__name__)
 CORS(app, resources={r"/api/*": {"origins": "http://localhost:3000"}})
@@ -11,9 +12,6 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # Initialize database
 db.init_app(app)
-
-# Import routes after db initialization
-from routes.recipes import recipes, ai_bp
 
 app.register_blueprint(recipes)
 app.register_blueprint(ai_bp)

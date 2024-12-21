@@ -1,7 +1,7 @@
 from flask import Blueprint, jsonify, request
-from ..models.recipe import Recipe
-from ..app import db
-from ..utils.ai import generate_recipe, fetch_recipes
+from models.recipe import Recipe
+from database import db
+from utils.ai import generate_recipe
 
 ai_bp = Blueprint("ai", __name__)
 
@@ -32,10 +32,3 @@ def generate():
     ingredients = data.get("ingredients", [])
     recipe = generate_recipe(ingredients)
     return jsonify({"recipe": recipe})
-
-@ai_bp.route("/fetch-recipes", methods=["POST"])
-def fetch():
-    data = request.json
-    ingredients = data.get("ingredients", [])
-    recipes = fetch_recipes(ingredients)
-    return jsonify({"recipes": recipes})
