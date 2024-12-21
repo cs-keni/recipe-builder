@@ -13,22 +13,24 @@ A modern web application that helps you create and manage recipes from any ingre
 
 ### Frontend
 - React.js
+- Framer Motion
 - Tailwind CSS
 - TypeScript
 - Jest & React Testing Library
 
 ### Backend
-- Flask (Python)
-- SQLAlchemy
+- Flask 
+- SQLite (might switch to PostgreSQL)
 - OpenAI API
-- PostgreSQL
+- Flask-CORS
+- Werkzeug (might switch to Firebase)
 
 ## Getting Started
 
 ### Prerequisites
 - Node.js (v16 or higher)
 - Python 3.8+
-- PostgreSQL
+- SQLite (might switch to PostgreSQL)
 - OpenAI API key
 
 ### Installation
