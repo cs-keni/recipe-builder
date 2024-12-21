@@ -7,11 +7,17 @@ import RecipeList from "./components/RecipeList";
 function App() {
     const [recipes, setRecipes] = useState([]);
     const [isFormOpen, setIsFormOpen] = useState(false);
+    const [error, setError] = useState(null);
 
     useEffect(() => {
         const fetchData = async () => {
-            const data = await getRecipes();
-            setRecipes(data);
+            try {
+                const data = await getRecipes();
+                setRecipes(data || []);
+            } catch (error) {
+                setError("Failed to fetch recipes. Please try again later.");
+                console.error("Error:", error);
+            }
         };
         fetchData();
     }, []);
