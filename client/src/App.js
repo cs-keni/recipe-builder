@@ -6,6 +6,7 @@ import RecipeForm from "./components/RecipeForm";
 import RecipeList from "./components/RecipeList";
 import Welcome from "./components/Welcome";
 import GenerateRecipeForm from "./components/GenerateRecipeForm";
+import RecipeSuggestions from "./components/RecipeSuggestions";
 
 function App() {
     const [recipes, setRecipes] = useState([]);
@@ -47,7 +48,7 @@ function App() {
     };
 
     return (
-        <div style={{ width: '100vw', height: '100vh', position: 'relative', overflow: 'hidden' }}>
+        <div style={{ position: 'relative' }}>
             <AnimatePresence mode="wait">
                 {currentView === 'welcome' && (
                     <motion.div
@@ -57,9 +58,11 @@ function App() {
                         exit={{ opacity: 0, x: '-100%' }}
                         transition={{ duration: 0.5, ease: "easeInOut" }}
                         style={{
-                            position: 'absolute',
+                            position: 'fixed',
                             width: '100%',
-                            height: '100%'
+                            height: '100vh',
+                            top: 0,
+                            left: 0
                         }}
                     >
                         <Welcome onGetStarted={handleGetStarted} />
@@ -73,11 +76,6 @@ function App() {
                         animate={{ opacity: 1, x: 0 }}
                         exit={{ opacity: 0, x: '100%' }}
                         transition={{ duration: 0.5, ease: "easeInOut" }}
-                        style={{
-                            position: 'absolute',
-                            width: '100%',
-                            height: '100%'
-                        }}
                     >
                         <div className="min-h-screen bg-gray-100">
                             <nav className="bg-white shadow-lg">
@@ -118,9 +116,11 @@ function App() {
                                         </div>
                                     </div>
 
-                                    {/* Main content - Generate Recipe Form */}
-                                    <div className="lg:col-span-2">
+                                    {/* Main content - Generate Recipe Form and Suggestions */}
+                                    <div className="lg:col-span-2 space-y-8">
                                         <GenerateRecipeForm onRecipeGenerated={handleRecipeAdded} />
+                                        
+                                        <RecipeSuggestions />
                                         
                                         <div className="mt-8">
                                             <button
