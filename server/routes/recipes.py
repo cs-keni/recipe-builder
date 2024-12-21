@@ -1,7 +1,7 @@
 from flask import Blueprint, jsonify, request
-from server.models.recipe import Recipe
-from server.app import db
-from utils.ai import generate_recipe, fetch_recipes
+from ..models.recipe import Recipe
+from ..app import db
+from ..utils.ai import generate_recipe, fetch_recipes
 
 ai_bp = Blueprint("ai", __name__)
 
