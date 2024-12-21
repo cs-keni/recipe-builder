@@ -26,9 +26,12 @@ init_db()
 
 @app.route('/api/register', methods=['POST'])
 def register():
+    print("Received registration request")
     data = request.get_json()
+    print("Request data:", data)
     
     if not all(k in data for k in ["name", "email", "password"]):
+        print("Missing required fields")
         return jsonify({"message": "Missing required fields"}), 400
     
     try:
@@ -38,6 +41,7 @@ def register():
         # Check if email already exists
         c.execute('SELECT * FROM users WHERE email = ?', (data['email'],))
         if c.fetchone() is not None:
+            print("Email already registered")
             return jsonify({"message": "Email already registered"}), 400
         
         # Hash password and store user
@@ -51,6 +55,7 @@ def register():
         user = c.fetchone()
         conn.close()
         
+        print("User registered successfully:", user)
         return jsonify({
             "user": {
                 "id": user[0],
@@ -60,6 +65,7 @@ def register():
         }), 201
         
     except Exception as e:
+        print("Error during registration:", str(e))
         return jsonify({"message": str(e)}), 500
 
 @app.route('/api/login', methods=['POST'])
