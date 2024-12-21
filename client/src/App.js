@@ -109,7 +109,7 @@ function App() {
                         animate={{ opacity: 1, x: 0 }}
                         exit={{ opacity: 0, x: '100%' }}
                         transition={{ duration: 0.5, ease: "easeInOut" }}
-                        className={isDarkMode ? 'bg-gray-900' : 'bg-gray-100'}
+                        className={`min-h-screen ${isDarkMode ? 'bg-gray-900' : 'bg-gray-100'}`}
                     >
                         <Header 
                             user={user}
@@ -117,10 +117,12 @@ function App() {
                             isDarkMode={isDarkMode}
                             onToggleDarkMode={() => setIsDarkMode(!isDarkMode)}
                         />
-                        <div className="min-h-screen bg-gray-100">
-                            <nav className="bg-white shadow-lg">
+                        <div className={`min-h-screen ${isDarkMode ? 'bg-gray-900' : 'bg-gray-100'}`}>
+                            <nav className={`${isDarkMode ? 'bg-gray-800' : 'bg-white'} shadow-lg`}>
                                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-                                    <h1 className="text-3xl font-bold text-gray-800">Recipe Builder</h1>
+                                    <h1 className={`text-3xl font-bold ${isDarkMode ? 'text-white' : 'text-gray-800'}`}>
+                                        Recipe Builder
+                                    </h1>
                                 </div>
                             </nav>
 
@@ -128,10 +130,14 @@ function App() {
                                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                                     {/* Left sidebar - Recipe List */}
                                     <div className="lg:col-span-1">
-                                        <div className="bg-white rounded-lg shadow-lg p-6">
-                                            <h2 className="text-xl font-semibold mb-4">Your Recipes</h2>
+                                        <div className={`${isDarkMode ? 'bg-gray-800' : 'bg-white'} rounded-lg shadow-lg p-6`}>
+                                            <h2 className={`text-xl font-semibold mb-4 ${isDarkMode ? 'text-white' : 'text-gray-800'}`}>
+                                                Your Recipes
+                                            </h2>
                                             {recipes.length === 0 ? (
-                                                <p className="text-gray-500 text-center">No Recipes Added Yet</p>
+                                                <p className={`text-center ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                                                    No Recipes Added Yet
+                                                </p>
                                             ) : (
                                                 <ul className="space-y-3">
                                                     {recipes.map((recipe) => (
@@ -140,9 +146,13 @@ function App() {
                                                             initial={{ opacity: 0 }}
                                                             animate={{ opacity: 1 }}
                                                             exit={{ opacity: 0 }}
-                                                            className="flex justify-between items-center p-3 bg-gray-50 rounded-md"
+                                                            className={`flex justify-between items-center p-3 ${
+                                                                isDarkMode ? 'bg-gray-700' : 'bg-gray-50'
+                                                            } rounded-md`}
                                                         >
-                                                            <span>{recipe.name}</span>
+                                                            <span className={isDarkMode ? 'text-white' : ''}>
+                                                                {recipe.name}
+                                                            </span>
                                                             <button
                                                                 onClick={() => handleRecipeDeleted(recipe.id)}
                                                                 className="text-red-600 hover:text-red-800"
@@ -156,42 +166,17 @@ function App() {
                                         </div>
                                     </div>
 
-                                    {/* Main content - Generate Recipe Form and Suggestions */}
+                                    {/* Main content area */}
                                     <div className="lg:col-span-2 space-y-8">
-                                        <GenerateRecipeForm onRecipeGenerated={handleRecipeAdded} />
+                                        <div className={`${isDarkMode ? 'bg-gray-800' : 'bg-white'} rounded-lg shadow-lg p-6`}>
+                                            <GenerateRecipeForm onRecipeGenerated={handleRecipeAdded} isDarkMode={isDarkMode} />
+                                        </div>
                                         
-                                        <RecipeSuggestions />
-                                        
-                                        <div className="mt-8">
-                                            <button
-                                                onClick={() => setIsFormOpen(true)}
-                                                className="w-full bg-white text-indigo-600 px-4 py-2 rounded-md border-2 border-indigo-600 hover:bg-indigo-50 transition-colors text-center"
-                                            >
-                                                Already got a recipe you want to add? Click here!
-                                            </button>
+                                        <div className={`${isDarkMode ? 'bg-gray-800' : 'bg-white'} rounded-lg shadow-lg p-6`}>
+                                            <RecipeSuggestions isDarkMode={isDarkMode} />
                                         </div>
                                     </div>
                                 </div>
-
-                                <AnimatePresence>
-                                    {isFormOpen && (
-                                        <motion.div
-                                            initial={{ opacity: 0 }}
-                                            animate={{ opacity: 1 }}
-                                            exit={{ opacity: 0 }}
-                                            className="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center"
-                                        >
-                                            <motion.div
-                                                initial={{ scale: 0.9 }}
-                                                animate={{ scale: 1 }}
-                                                exit={{ scale: 0.9 }}
-                                                className="bg-white rounded-lg p-8 max-w-2xl w-full"
-                                            >
-                                                <RecipeForm onRecipeAdded={handleRecipeAdded} onCancel={() => setIsFormOpen(false)} />
-                                            </motion.div>
-                                        </motion.div>
-                                    )}
-                                </AnimatePresence>
                             </main>
                         </div>
                     </motion.div>
