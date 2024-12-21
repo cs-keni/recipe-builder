@@ -1,26 +1,36 @@
 import './App.css';
 import React, { useEffect, useState } from "react";
+import { motion, AnimatePresence } from 'framer-motion';
 import { getRecipes } from "./api";
 import RecipeForm from "./components/RecipeForm";
 import RecipeList from "./components/RecipeList";
+import Welcome from "./components/Welcome";
 
 function App() {
     const [recipes, setRecipes] = useState([]);
     const [isFormOpen, setIsFormOpen] = useState(false);
     const [error, setError] = useState(null);
+    const [currentView, setCurrentView] = useState('welcome'); // welcome or main
 
     useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const data = await getRecipes();
-                setRecipes(data || []);
-            } catch (error) {
-                setError("Failed to fetch recipes. Please try again later.");
-                console.error("Error:", error);
-            }
-        };
-        fetchData();
-    }, []);
+        if (currentView === 'main') {
+            fetchData();
+        }
+    }, [currentView]);
+
+    const fetchData = async () => {
+        try {
+            const data = await getRecipes();
+            setRecipes(data || []);
+        } catch (error) {
+            setError("Failed to fetch recipes. Please try again later.");
+            console.error("Error:", error);
+        }
+    };
+
+    const handleGetStarted = () => {
+        setCurrentView('main');
+    };
 
     const handleRecipeAdded = (newRecipe) => {
         setRecipes([...recipes, newRecipe]);
@@ -30,6 +40,10 @@ function App() {
     const handleRecipeDeleted = (id) => {
         setRecipes(recipes.filter((recipe) => recipe.id !== id));
     };
+
+    if (currentView === 'welcome') {
+        return <Welcome onGetStarted={handleGetStarted} />;
+    }
 
     return (
         <div className="min-h-screen bg-gray-100">
@@ -49,13 +63,25 @@ function App() {
                     </button>
                 </div>
 
-                {isFormOpen && (
-                    <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center">
-                        <div className="bg-white rounded-lg p-8 max-w-2xl w-full">
-                            <RecipeForm onRecipeAdded={handleRecipeAdded} onCancel={() => setIsFormOpen(false)} />
-                        </div>
-                    </div>
-                )}
+                <AnimatePresence>
+                    {isFormOpen && (
+                        <motion.div
+                            initial={{ opacity: 0, y: -50 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -50 }}
+                            className="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center"
+                        >
+                            <motion.div
+                                initial={{ scale: 0.9 }}
+                                animate={{ scale: 1 }}
+                                exit={{ scale: 0.9 }}
+                                className="bg-white rounded-lg p-8 max-w-2xl w-full"
+                            >
+                                <RecipeForm onRecipeAdded={handleRecipeAdded} onCancel={() => setIsFormOpen(false)} />
+                            </motion.div>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
 
                 <RecipeList recipes={recipes} onRecipeDeleted={handleRecipeDeleted} />
             </main>
