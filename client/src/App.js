@@ -7,6 +7,7 @@ import RecipeList from "./components/RecipeList";
 import Welcome from "./components/Welcome";
 import GenerateRecipeForm from "./components/GenerateRecipeForm";
 import RecipeSuggestions from "./components/RecipeSuggestions";
+import Auth from "./components/Auth";
 
 function App() {
     const [recipes, setRecipes] = useState([]);
@@ -14,6 +15,7 @@ function App() {
     const [error, setError] = useState(null);
     const [currentView, setCurrentView] = useState('welcome');
     const [isAnimating, setIsAnimating] = useState(false);
+    const [user, setUser] = useState(null);
 
     useEffect(() => {
         if (currentView === 'main') {
@@ -34,8 +36,13 @@ function App() {
     const handleGetStarted = () => {
         setIsAnimating(true);
         setTimeout(() => {
-            setCurrentView('main');
+            setCurrentView('auth');
         }, 500);
+    };
+
+    const handleLogin = (userData) => {
+        setUser(userData);
+        setCurrentView('main');
     };
 
     const handleRecipeAdded = (newRecipe) => {
@@ -66,6 +73,25 @@ function App() {
                         }}
                     >
                         <Welcome onGetStarted={handleGetStarted} />
+                    </motion.div>
+                )}
+
+                {currentView === 'auth' && (
+                    <motion.div
+                        key="auth"
+                        initial={{ opacity: 0, x: '100%' }}
+                        animate={{ opacity: 1, x: 0 }}
+                        exit={{ opacity: 0, x: '-100%' }}
+                        transition={{ duration: 0.5, ease: "easeInOut" }}
+                        style={{
+                            position: 'fixed',
+                            width: '100%',
+                            height: '100vh',
+                            top: 0,
+                            left: 0
+                        }}
+                    >
+                        <Auth onLogin={handleLogin} />
                     </motion.div>
                 )}
 
