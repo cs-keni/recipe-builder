@@ -27,7 +27,11 @@ function RecipeSearch({ onSearch, isDarkMode }) {
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                         placeholder="Search recipes..."
-                        className="w-full px-4 py-2 rounded-md border focus:ring-2 focus:ring-indigo-500"
+                        className={`w-full px-4 py-2 rounded-md border ${
+                            isDarkMode 
+                                ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400' 
+                                : 'border-gray-300'
+                        }`}
                     />
                 </div>
                 
@@ -35,7 +39,11 @@ function RecipeSearch({ onSearch, isDarkMode }) {
                     <select
                         value={filters.category}
                         onChange={(e) => setFilters({...filters, category: e.target.value})}
-                        className="px-4 py-2 rounded-md border"
+                        className={`px-4 py-2 rounded-md border ${
+                            isDarkMode 
+                                ? 'bg-gray-700 border-gray-600 text-white' 
+                                : 'border-gray-300'
+                        }`}
                     >
                         <option value="all">All Categories</option>
                         <option value="main">Main Dishes</option>
@@ -46,7 +54,11 @@ function RecipeSearch({ onSearch, isDarkMode }) {
                     <select
                         value={filters.difficulty}
                         onChange={(e) => setFilters({...filters, difficulty: e.target.value})}
-                        className="px-4 py-2 rounded-md border"
+                        className={`px-4 py-2 rounded-md border ${
+                            isDarkMode 
+                                ? 'bg-gray-700 border-gray-600 text-white' 
+                                : 'border-gray-300'
+                        }`}
                     >
                         <option value="all">All Difficulties</option>
                         <option value="easy">Easy</option>
@@ -57,7 +69,11 @@ function RecipeSearch({ onSearch, isDarkMode }) {
                     <select
                         value={filters.time}
                         onChange={(e) => setFilters({...filters, time: e.target.value})}
-                        className="px-4 py-2 rounded-md border"
+                        className={`px-4 py-2 rounded-md border ${
+                            isDarkMode 
+                                ? 'bg-gray-700 border-gray-600 text-white' 
+                                : 'border-gray-300'
+                        }`}
                     >
                         <option value="all">Any Time</option>
                         <option value="15">15 minutes or less</option>
