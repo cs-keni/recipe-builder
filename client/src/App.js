@@ -19,6 +19,13 @@ function App() {
     const [isAnimating, setIsAnimating] = useState(false);
     const [user, setUser] = useState(null);
     const [isDarkMode, setIsDarkMode] = useState(false);
+    const [searchFilters, setSearchFilters] = useState({
+        searchTerm: '',
+        category: 'all',
+        difficulty: 'all',
+        time: 'all'
+    });
+    const [filteredRecipes, setFilteredRecipes] = useState([]);
 
     useEffect(() => {
         if (currentView === 'main') {
@@ -113,7 +120,7 @@ function App() {
                             left: 0
                         }}
                     >
-                        <Auth onLogin={handleLogin} />
+                        <Auth onLogin={handleLogin} isDarkMode={isDarkMode} />
                     </motion.div>
                 )}
 
