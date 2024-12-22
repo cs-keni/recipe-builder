@@ -1,6 +1,6 @@
 # Recipe Builder
 
-A modern web application that helps you create and manage recipes from any ingredients you have on hand. Powered by AI to suggest creative recipes based on your available ingredients.
+A modern CRUD (the acronym, not the word) web application that helps you create and manage recipes from any ingredients you have on hand. Powered by AI to suggest creative recipes based on your available ingredients.
 
 ## Features
 
@@ -13,24 +13,24 @@ A modern web application that helps you create and manage recipes from any ingre
 
 ### Frontend
 - React.js
-- Framer Motion
+- Framer Motion (animations so smooth wow!)
 - Tailwind CSS
 - TypeScript
 - Jest & React Testing Library
 
 ### Backend
 - Flask 
-- SQLite (might switch to PostgreSQL)
+- SQLite (might switch to PostgreSQL or mongoDB)
 - OpenAI API
 - Flask-CORS
-- Werkzeug (might switch to Firebase)
+- Werkzeug (definitely switching to Firebase)
 
 ## Getting Started
 
 ### Prerequisites
 - Node.js (v16 or higher)
 - Python 3.8+
-- SQLite (might switch to PostgreSQL)
+- SQLite (might switch to PostgreSQL or mongoDB)
 - OpenAI API key
 
 ### Installation
@@ -50,7 +50,7 @@ npm install
 
 3. Install backend dependencies:
 ```bash
-cd ../server
+cd server
 pip install -r requirements.txt
 ```
 
@@ -61,7 +61,7 @@ OPENAI_API_KEY=your_openai_api_key
 DATABASE_URL=your_database_url
 ```
 
-### Running the Application
+### Running the Application For Development (and for users!)
 
 1. Start the backend server:
 ```bash
@@ -79,13 +79,13 @@ The application will be available at `http://localhost:3000`
 
 ## Testing
 
-Run frontend tests:
+Run frontend tests: (haven't done this yet)
 ```bash
 cd client
 npm test
 ```
 
-Run backend tests:
+Run backend tests: (haven't done this yet)
 ```bash
 cd server
 python -m pytest
@@ -101,7 +101,7 @@ python -m pytest
 
 ## License
 
-No license!
+No license! I don't care if you copy it. I'm not a lawyer and don't want to be one. It'd be nice to include me in credits though! Also I'm too scared to actually deploy this outside of a local environment because it costs money to use the API (it's cheap, but still, I'm a broke university student).
 
 ## Author
 
@@ -111,3 +111,10 @@ Kenny Nguyen (cs-keni)
 
 - OpenAI for providing the AI recipe generation capabilities
 - Create React App for the initial project setup
+- Professor Boyana for her intro to software engineering course (I'm not sure if I'm allowed to say this, but I'm grateful for her help and guidance)
+- My sister for giving me feature ideas
+- Unsplash for the images
+- ChatGPT for breaking my code and helping me learn to fix it on my own
+- Stack Overflow for giving me irrelevant answers to my questions, making me learn to fix it on my own
+- My rubber duck -- my biggest contributor
+- My noisy neighbors who blast their music at full volume ON SPEAKERS at 3 in the f___ing morning
