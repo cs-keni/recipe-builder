@@ -6,10 +6,20 @@ function RecipeForm({ onRecipeAdded, onCancel }) {
     const [ingredients, setIngredients] = useState("");
     const [instructions, setInstructions] = useState("");
     const [isGenerating, setIsGenerating] = useState(false);
+    const [category, setCategory] = useState("main");
+    const [difficulty, setDifficulty] = useState("medium");
+    const [cookingTime, setCookingTime] = useState(30);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const newRecipe = { name, ingredients, instructions };
+        const newRecipe = { 
+            name, 
+            ingredients, 
+            instructions,
+            category,
+            difficulty,
+            cookingTime
+        };
         const addedRecipe = await addRecipe(newRecipe);
         onRecipeAdded(addedRecipe);
     };
@@ -54,6 +64,45 @@ function RecipeForm({ onRecipeAdded, onCancel }) {
                     className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
                     required
                 />
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                    <label className="block text-sm font-medium text-gray-700">Category</label>
+                    <select
+                        value={category}
+                        onChange={(e) => setCategory(e.target.value)}
+                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                    >
+                        <option value="main">Main Dish</option>
+                        <option value="dessert">Dessert</option>
+                        <option value="vegetarian">Vegetarian</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label className="block text-sm font-medium text-gray-700">Difficulty</label>
+                    <select
+                        value={difficulty}
+                        onChange={(e) => setDifficulty(e.target.value)}
+                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                    >
+                        <option value="easy">Easy</option>
+                        <option value="medium">Medium</option>
+                        <option value="hard">Hard</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label className="block text-sm font-medium text-gray-700">Cooking Time (minutes)</label>
+                    <input
+                        type="number"
+                        value={cookingTime}
+                        onChange={(e) => setCookingTime(parseInt(e.target.value))}
+                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                        min="1"
+                    />
+                </div>
             </div>
 
             <div className="flex justify-end space-x-4">

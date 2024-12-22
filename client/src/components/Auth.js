@@ -66,7 +66,7 @@ function Auth({ onLogin }) {
                 className="bg-white p-10 rounded-lg shadow-xl w-full max-w-xl"
             >
                 <h2 className="text-3xl font-bold text-gray-800 mb-8 text-center">
-                    {isLogin ? 'Welcome Back!' : 'Create Account'}
+                    {isLogin ? 'Welcome!' : 'Create Account'}
                 </h2>
 
                 {error && (

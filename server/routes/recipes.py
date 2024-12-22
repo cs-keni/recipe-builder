@@ -14,7 +14,14 @@ def get_recipes():
 @recipes.route("/api/recipes", methods=["POST"])
 def add_recipe():
     data = request.json
-    recipe = Recipe(name=data["name"], ingredients=data["ingredients"], instructions=data["instructions"])
+    recipe = Recipe(
+        name=data["name"],
+        ingredients=data["ingredients"],
+        instructions=data["instructions"],
+        category=data.get("category", "main"),
+        difficulty=data.get("difficulty", "medium"),
+        cooking_time=data.get("cookingTime", 30)
+    )
     db.session.add(recipe)
     db.session.commit()
     return jsonify(recipe.to_dict())

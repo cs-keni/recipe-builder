@@ -9,6 +9,7 @@ import GenerateRecipeForm from "./components/GenerateRecipeForm";
 import RecipeSuggestions from "./components/RecipeSuggestions";
 import Auth from "./components/Auth";
 import Header from "./components/Header";
+import RecipeSearch from "./components/RecipeSearch";
 
 function App() {
     const [recipes, setRecipes] = useState([]);
@@ -59,6 +60,20 @@ function App() {
     const handleLogout = () => {
         setUser(null);
         setCurrentView('auth');
+    };
+
+    const handleSearch = (filters) => {
+        setSearchFilters(filters);
+        const filtered = recipes.filter(recipe => {
+            const matchesSearch = recipe.name.toLowerCase().includes(filters.searchTerm.toLowerCase()) ||
+                                recipe.ingredients.toLowerCase().includes(filters.searchTerm.toLowerCase());
+            const matchesCategory = filters.category === 'all' || recipe.category === filters.category;
+            const matchesDifficulty = filters.difficulty === 'all' || recipe.difficulty === filters.difficulty;
+            const matchesTime = filters.time === 'all' || recipe.cookingTime <= parseInt(filters.time);
+            
+            return matchesSearch && matchesCategory && matchesDifficulty && matchesTime;
+        });
+        setFilteredRecipes(filtered);
     };
 
     return (
@@ -168,6 +183,10 @@ function App() {
 
                                     {/* Main content area */}
                                     <div className="lg:col-span-2 space-y-8">
+                                        <div className={`${isDarkMode ? 'bg-gray-800' : 'bg-white'} rounded-lg shadow-lg p-6`}>
+                                            <RecipeSearch onSearch={handleSearch} isDarkMode={isDarkMode} />
+                                        </div>
+                                        
                                         <div className={`${isDarkMode ? 'bg-gray-800' : 'bg-white'} rounded-lg shadow-lg p-6`}>
                                             <GenerateRecipeForm onRecipeGenerated={handleRecipeAdded} isDarkMode={isDarkMode} />
                                         </div>
