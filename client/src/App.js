@@ -83,6 +83,29 @@ function App() {
         setFilteredRecipes(filtered);
     };
 
+    const handleUpdateProfile = async (updatedData) => {
+        try {
+            const response = await fetch('http://localhost:5000/api/profile/update', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                },
+                body: JSON.stringify(updatedData)
+            });
+
+            const data = await response.json();
+            if (response.ok) {
+                setUser(data.user);
+            } else {
+                throw new Error(data.message);
+            }
+        } catch (error) {
+            console.error('Error updating profile:', error);
+            throw error;
+        }
+    };
+
     return (
         <div style={{ position: 'relative' }}>
             <AnimatePresence mode="wait">
@@ -138,6 +161,7 @@ function App() {
                             onLogout={handleLogout}
                             isDarkMode={isDarkMode}
                             onToggleDarkMode={() => setIsDarkMode(!isDarkMode)}
+                            onUpdateProfile={handleUpdateProfile}
                         />
                         <div className={`min-h-screen ${isDarkMode ? 'bg-gray-900' : 'bg-gray-100'}`}>
                             <nav className={`${isDarkMode ? 'bg-gray-800' : 'bg-white'} shadow-lg`}>
