@@ -102,114 +102,143 @@ function ProfileModal({ isOpen, onClose, user, onUpdateProfile, isDarkMode }) {
                             </div>
 
                             {/* Tab Content */}
-                            <div className="mt-6">
-                                {activeTab === 'general' && (
-                                    <div className="space-y-6">
-                                        {/* Existing UserProfile form content */}
-                                    </div>
-                                )}
+                            <div className="mt-6 relative" style={{ minHeight: '400px' }}>
+                                <AnimatePresence mode="wait">
+                                    {activeTab === 'general' && (
+                                        <motion.div
+                                            key="general"
+                                            initial={{ opacity: 0, x: -20 }}
+                                            animate={{ opacity: 1, x: 0 }}
+                                            exit={{ opacity: 0, x: 20 }}
+                                            transition={{ duration: 0.3 }}
+                                            className="absolute w-full"
+                                        >
+                                            <div className="space-y-6">
+                                                {/* Existing UserProfile form content */}
+                                            </div>
+                                        </motion.div>
+                                    )}
 
-                                {activeTab === 'avatar' && (
-                                    <div className="space-y-6">
-                                        <div className="grid grid-cols-5 gap-4">
-                                            {defaultIcons.map((icon, index) => (
-                                                <button
-                                                    key={index}
-                                                    onClick={() => {
-                                                        setSelectedIcon(icon);
-                                                        setCustomImage(null);
-                                                    }}
-                                                    className={`text-3xl p-4 rounded-lg ${
-                                                        selectedIcon === icon
-                                                            ? 'bg-indigo-600'
-                                                            : isDarkMode
+                                    {activeTab === 'avatar' && (
+                                        <motion.div
+                                            key="avatar"
+                                            initial={{ opacity: 0, x: -20 }}
+                                            animate={{ opacity: 1, x: 0 }}
+                                            exit={{ opacity: 0, x: 20 }}
+                                            transition={{ duration: 0.3 }}
+                                            className="absolute w-full"
+                                        >
+                                            <div className="space-y-6">
+                                                <div className="grid grid-cols-5 gap-4">
+                                                    {defaultIcons.map((icon, index) => (
+                                                        <button
+                                                            key={index}
+                                                            onClick={() => {
+                                                                setSelectedIcon(icon);
+                                                                setCustomImage(null);
+                                                            }}
+                                                            className={`text-3xl p-4 rounded-lg ${
+                                                                selectedIcon === icon
+                                                                    ? 'bg-indigo-600'
+                                                                    : isDarkMode
+                                                                        ? 'bg-gray-700 hover:bg-gray-600'
+                                                                        : 'bg-gray-100 hover:bg-gray-200'
+                                                            }`}
+                                                        >
+                                                            {icon}
+                                                        </button>
+                                                    ))}
+                                                </div>
+                                                
+                                                <div className="mt-6">
+                                                    <label className="block mb-2">
+                                                        <span className={`${isDarkMode ? 'text-gray-200' : 'text-gray-700'}`}>
+                                                            Or upload your own
+                                                        </span>
+                                                        <input
+                                                            type="file"
+                                                            accept="image/*"
+                                                            onChange={handleImageUpload}
+                                                            className="hidden"
+                                                        />
+                                                        <div className={`mt-2 px-4 py-2 rounded-md cursor-pointer text-center ${
+                                                            isDarkMode
                                                                 ? 'bg-gray-700 hover:bg-gray-600'
                                                                 : 'bg-gray-100 hover:bg-gray-200'
-                                                    }`}
-                                                >
-                                                    {icon}
-                                                </button>
-                                            ))}
-                                        </div>
-                                        
-                                        <div className="mt-6">
-                                            <label className="block mb-2">
-                                                <span className={`${isDarkMode ? 'text-gray-200' : 'text-gray-700'}`}>
-                                                    Or upload your own
-                                                </span>
-                                                <input
-                                                    type="file"
-                                                    accept="image/*"
-                                                    onChange={handleImageUpload}
-                                                    className="hidden"
-                                                />
-                                                <div className={`mt-2 px-4 py-2 rounded-md cursor-pointer text-center ${
-                                                    isDarkMode
-                                                        ? 'bg-gray-700 hover:bg-gray-600'
-                                                        : 'bg-gray-100 hover:bg-gray-200'
-                                                }`}>
-                                                    <FiUpload className="inline mr-2" />
-                                                    Choose Image
+                                                        }`}>
+                                                            <FiUpload className="inline mr-2" />
+                                                            Choose Image
+                                                        </div>
+                                                    </label>
                                                 </div>
-                                            </label>
-                                        </div>
-                                    </div>
-                                )}
+                                            </div>
+                                        </motion.div>
+                                    )}
 
-                                {activeTab === 'security' && (
-                                    <form onSubmit={handlePasswordChange} className="space-y-6">
-                                        <div>
-                                            <label className={`block text-sm font-medium mb-2 ${isDarkMode ? 'text-gray-200' : 'text-gray-700'}`}>
-                                                Current Password
-                                            </label>
-                                            <input
-                                                type="password"
-                                                value={passwordData.currentPassword}
-                                                onChange={(e) => setPasswordData({
-                                                    ...passwordData,
-                                                    currentPassword: e.target.value
-                                                })}
-                                                className={`w-full px-3 py-2 rounded-md ${
-                                                    isDarkMode 
-                                                        ? 'bg-gray-700 border-gray-600 text-white' 
-                                                        : 'border border-gray-300'
-                                                }`}
-                                                required
-                                            />
-                                        </div>
-
-                                        <div>
-                                            <label className={`block text-sm font-medium mb-2 ${isDarkMode ? 'text-gray-200' : 'text-gray-700'}`}>
-                                                New Password
-                                            </label>
-                                            <input
-                                                type="password"
-                                                value={passwordData.newPassword}
-                                                onChange={(e) => setPasswordData({
-                                                    ...passwordData,
-                                                    newPassword: e.target.value
-                                                })}
-                                                className={`w-full px-3 py-2 rounded-md ${
-                                                    isDarkMode 
-                                                        ? 'bg-gray-700 border-gray-600 text-white' 
-                                                        : 'border border-gray-300'
-                                                }`}
-                                                required
-                                            />
-                                            <PasswordValidation 
-                                                password={passwordData.newPassword}
-                                                isDarkMode={isDarkMode}
-                                            />
-                                        </div>
-
-                                        <button
-                                            type="submit"
-                                            className="w-full bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 transition-colors"
+                                    {activeTab === 'security' && (
+                                        <motion.div
+                                            key="security"
+                                            initial={{ opacity: 0, x: -20 }}
+                                            animate={{ opacity: 1, x: 0 }}
+                                            exit={{ opacity: 0, x: 20 }}
+                                            transition={{ duration: 0.3 }}
+                                            className="absolute w-full"
                                         >
-                                            Update Password
-                                        </button>
-                                    </form>
-                                )}
+                                            <form onSubmit={handlePasswordChange} className="space-y-6">
+                                                <div>
+                                                    <label className={`block text-sm font-medium mb-2 ${isDarkMode ? 'text-gray-200' : 'text-gray-700'}`}>
+                                                        Current Password
+                                                    </label>
+                                                    <input
+                                                        type="password"
+                                                        value={passwordData.currentPassword}
+                                                        onChange={(e) => setPasswordData({
+                                                            ...passwordData,
+                                                            currentPassword: e.target.value
+                                                        })}
+                                                        className={`w-full px-3 py-2 rounded-md ${
+                                                            isDarkMode 
+                                                                ? 'bg-gray-700 border-gray-600 text-white' 
+                                                                : 'border border-gray-300'
+                                                        }`}
+                                                        required
+                                                    />
+                                                </div>
+
+                                                <div>
+                                                    <label className={`block text-sm font-medium mb-2 ${isDarkMode ? 'text-gray-200' : 'text-gray-700'}`}>
+                                                        New Password
+                                                    </label>
+                                                    <input
+                                                        type="password"
+                                                        value={passwordData.newPassword}
+                                                        onChange={(e) => setPasswordData({
+                                                            ...passwordData,
+                                                            newPassword: e.target.value
+                                                        })}
+                                                        className={`w-full px-3 py-2 rounded-md ${
+                                                            isDarkMode 
+                                                                ? 'bg-gray-700 border-gray-600 text-white' 
+                                                                : 'border border-gray-300'
+                                                        }`}
+                                                        required
+                                                    />
+                                                    <PasswordValidation 
+                                                        password={passwordData.newPassword}
+                                                        isDarkMode={isDarkMode}
+                                                    />
+                                                </div>
+
+                                                <button
+                                                    type="submit"
+                                                    className="w-full bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 transition-colors"
+                                                >
+                                                    Update Password
+                                                </button>
+                                            </form>
+                                        </motion.div>
+                                    )}
+                                </AnimatePresence>
                             </div>
                         </div>
                     </motion.div>
