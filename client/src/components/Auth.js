@@ -207,7 +207,7 @@ function Auth({ onLogin, isDarkMode }) {
                             {isLogin ? 'Sign Up' : 'Login'}
                         </button>
                     </p>
-                    {isLogin && (
+                    {isLogin && !showForgotPassword && (
                         <button
                             onClick={() => setShowForgotPassword(true)}
                             className="text-sm text-indigo-600 hover:text-indigo-500 font-medium"
