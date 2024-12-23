@@ -117,4 +117,5 @@ Kenny Nguyen (cs-keni)
 - ChatGPT for breaking my code and helping me learn to fix it on my own
 - Stack Overflow for giving me irrelevant answers to my questions, making me learn to fix it on my own
 - My rubber duck -- my biggest contributor
-- My noisy neighbors who blast their music at full volume ON SPEAKERS at 3 in the f___ing morning
+
+As you can see, this is very unserious.
