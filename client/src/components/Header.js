@@ -23,10 +23,27 @@ function Header({ user, onLogout, isDarkMode, onToggleDarkMode, onUpdateProfile 
                             </h1>
                         </div>
                         
-                        <div className="relative">
+                        <div className="relative flex items-center space-x-2">
+                            {user.avatar && (
+                                <div className={`w-8 h-8 rounded-full flex items-center justify-center text-lg ${
+                                    isDarkMode ? 'bg-gray-700' : 'bg-gray-100'
+                                }`}>
+                                    {user.avatar.startsWith('/uploads') ? (
+                                        <img 
+                                            src={user.avatar} 
+                                            alt="Profile" 
+                                            className="w-full h-full rounded-full object-cover"
+                                        />
+                                    ) : (
+                                        <span>{user.avatar}</span>
+                                    )}
+                                </div>
+                            )}
                             <button
                                 onClick={() => setIsMenuOpen(!isMenuOpen)}
-                                className={`p-2 rounded-full hover:bg-gray-100 ${isDarkMode ? 'text-white hover:bg-gray-700' : 'text-gray-600 hover:bg-gray-100'}`}
+                                className={`p-2 rounded-full hover:bg-gray-100 ${
+                                    isDarkMode ? 'text-white hover:bg-gray-700' : 'text-gray-600 hover:bg-gray-100'
+                                }`}
                             >
                                 <FiMenu size={24} />
                             </button>
@@ -37,7 +54,7 @@ function Header({ user, onLogout, isDarkMode, onToggleDarkMode, onUpdateProfile 
                                         initial={{ opacity: 0, y: -20 }}
                                         animate={{ opacity: 1, y: 0 }}
                                         exit={{ opacity: 0, y: -20 }}
-                                        className={`absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 
+                                        className={`absolute right-0 top-12 w-48 rounded-md shadow-lg py-1 
                                             ${isDarkMode ? 'bg-gray-700' : 'bg-white'}`}
                                     >
                                         <button
