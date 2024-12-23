@@ -72,10 +72,10 @@ function Auth({ onLogin, isDarkMode }) {
             className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-indigo-500 to-purple-600"
         >
             <motion.div
-                key={isLogin ? 'login' : 'signup'}
-                initial={{ opacity: 0, x: isLogin ? -50 : 50 }}
+                key={showForgotPassword ? 'forgot' : (isLogin ? 'login' : 'signup')}
+                initial={{ opacity: 0, x: showForgotPassword ? 50 : (isLogin ? -50 : 50) }}
                 animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: isLogin ? 50 : -50 }}
+                exit={{ opacity: 0, x: showForgotPassword ? -50 : (isLogin ? 50 : -50) }}
                 transition={{ 
                     type: "spring",
                     stiffness: 200,
