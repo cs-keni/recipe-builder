@@ -16,7 +16,7 @@ const UserSchema = new mongoose.Schema({
     },
     avatar: {
         type: String,
-        default: '👤' // Default avatar icon
+        default: 'https://images.unsplash.com/photo-1517849845537-4d257902454a?w=150'  // Default to the pug
     },
     date: {
         type: Date,

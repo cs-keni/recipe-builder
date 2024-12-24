@@ -85,18 +85,32 @@ function App() {
 
     const handleUpdateProfile = async (updatedData) => {
         try {
-            const response = await fetch('http://localhost:5000/api/profile/update', {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`
-                },
-                body: JSON.stringify(updatedData)
-            });
+            let response;
+            if (updatedData.avatar) {
+                // If updating avatar
+                response = await fetch('http://localhost:5000/api/profile/avatar/icon', {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    },
+                    body: JSON.stringify({ icon: updatedData.avatar })
+                });
+            } else {
+                // If updating other profile data
+                response = await fetch('http://localhost:5000/api/profile/update', {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    },
+                    body: JSON.stringify(updatedData)
+                });
+            }
 
             const data = await response.json();
             if (response.ok) {
-                setUser(data.user);
+                setUser(prev => ({ ...prev, ...updatedData }));
             } else {
                 throw new Error(data.message);
             }

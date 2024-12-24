@@ -13,8 +13,13 @@ function ProfileModal({ isOpen, onClose, user, onUpdateProfile, isDarkMode }) {
         confirmPassword: ''
     });
 
-    const defaultIcons = [
-        '👤', '👩', '👨', '🐱', '🐶', '🦊', '🐼', '🐨', '🦁', '🐯'
+    const defaultAvatars = [
+        'https://images.unsplash.com/photo-1517849845537-4d257902454a?w=150',  // Cute dog
+        'https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=150',  // Cute cat
+        'https://images.unsplash.com/photo-1537151608828-ea2b11777ee8?w=150',  // Another cute dog
+        'https://images.unsplash.com/photo-1518791841217-8f162f1e1131?w=150',  // Another cute cat
+        'https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?w=150',  // Smiling dog
+        'https://images.unsplash.com/photo-1573865526739-10659fec78a5?w=150',  // Playful cat
     ];
 
     const handleImageUpload = (e) => {
@@ -129,48 +134,46 @@ function ProfileModal({ isOpen, onClose, user, onUpdateProfile, isDarkMode }) {
                                             className="absolute w-full"
                                         >
                                             <div className="space-y-6">
-                                                <div className="grid grid-cols-5 gap-4">
-                                                    {defaultIcons.map((icon, index) => (
-                                                        <button
-                                                            key={index}
-                                                            onClick={() => {
-                                                                setSelectedIcon(icon);
-                                                                setCustomImage(null);
-                                                            }}
-                                                            className={`text-3xl p-4 rounded-lg ${
-                                                                selectedIcon === icon
-                                                                    ? 'bg-indigo-600'
-                                                                    : isDarkMode
-                                                                        ? 'bg-gray-700 hover:bg-gray-600'
-                                                                        : 'bg-gray-100 hover:bg-gray-200'
-                                                            }`}
-                                                        >
-                                                            {icon}
-                                                        </button>
-                                                    ))}
+                                                <div className="max-h-[300px] overflow-y-auto">
+                                                    <div className="grid grid-cols-3 gap-4 p-2">
+                                                        {defaultAvatars.map((avatar, index) => (
+                                                            <button
+                                                                key={index}
+                                                                onClick={() => {
+                                                                    setSelectedIcon(avatar);
+                                                                    setCustomImage(null);
+                                                                }}
+                                                                className={`relative aspect-square rounded-lg overflow-hidden ${
+                                                                    selectedIcon === avatar
+                                                                        ? 'ring-4 ring-indigo-600'
+                                                                        : 'hover:opacity-80'
+                                                                }`}
+                                                            >
+                                                                <img 
+                                                                    src={avatar} 
+                                                                    alt={`Avatar ${index + 1}`} 
+                                                                    className="w-full h-full object-cover"
+                                                                />
+                                                            </button>
+                                                        ))}
+                                                    </div>
                                                 </div>
                                                 
-                                                <div className="mt-6">
-                                                    <label className="block mb-2">
-                                                        <span className={`${isDarkMode ? 'text-gray-200' : 'text-gray-700'}`}>
-                                                            Or upload your own
-                                                        </span>
-                                                        <input
-                                                            type="file"
-                                                            accept="image/*"
-                                                            onChange={handleImageUpload}
-                                                            className="hidden"
-                                                        />
-                                                        <div className={`mt-2 px-4 py-2 rounded-md cursor-pointer text-center ${
-                                                            isDarkMode
-                                                                ? 'bg-gray-700 hover:bg-gray-600'
-                                                                : 'bg-gray-100 hover:bg-gray-200'
-                                                        }`}>
-                                                            <FiUpload className="inline mr-2" />
-                                                            Choose Image
-                                                        </div>
-                                                    </label>
-                                                </div>
+                                                <button
+                                                    onClick={() => {
+                                                        if (selectedIcon) {
+                                                            onUpdateProfile({ ...user, avatar: selectedIcon });
+                                                        }
+                                                    }}
+                                                    disabled={!selectedIcon}
+                                                    className={`w-full py-2 px-4 rounded-md ${
+                                                        selectedIcon 
+                                                            ? 'bg-indigo-600 hover:bg-indigo-700 text-white' 
+                                                            : 'bg-gray-300 cursor-not-allowed text-gray-500'
+                                                    }`}
+                                                >
+                                                    Save Avatar
+                                                </button>
                                             </div>
                                         </motion.div>
                                     )}
