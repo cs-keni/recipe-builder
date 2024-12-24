@@ -12,6 +12,7 @@ function ProfileModal({ isOpen, onClose, user, onUpdateProfile, isDarkMode }) {
         newPassword: '',
         confirmPassword: ''
     });
+    const [error, setError] = useState(null);
 
     const defaultAvatars = [
         'https://images.unsplash.com/photo-1517849845537-4d257902454a?w=150',  // Cute dog
@@ -160,9 +161,15 @@ function ProfileModal({ isOpen, onClose, user, onUpdateProfile, isDarkMode }) {
                                                 </div>
                                                 
                                                 <button
-                                                    onClick={() => {
+                                                    onClick={async () => {
                                                         if (selectedIcon) {
-                                                            onUpdateProfile({ ...user, avatar: selectedIcon });
+                                                            try {
+                                                                await onUpdateProfile({ ...user, avatar: selectedIcon });
+                                                                setError(null);
+                                                                onClose(); // Close modal after successful update
+                                                            } catch (err) {
+                                                                setError(err.message);
+                                                            }
                                                         }
                                                     }}
                                                     disabled={!selectedIcon}

@@ -16,7 +16,9 @@ const UserSchema = new mongoose.Schema({
     },
     avatar: {
         type: String,
-        default: 'https://images.unsplash.com/photo-1517849845537-4d257902454a?w=150'  // Default to the pug
+        default: function() {
+            return this.name ? this.name.charAt(0).toUpperCase() : 'U';
+        }
     },
     date: {
         type: Date,

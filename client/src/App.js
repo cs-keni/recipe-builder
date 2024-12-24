@@ -85,35 +85,38 @@ function App() {
 
     const handleUpdateProfile = async (updatedData) => {
         try {
-            let response;
+            let endpoint = 'http://localhost:5000/api/profile/';
+            let body = updatedData;
+
             if (updatedData.avatar) {
-                // If updating avatar
-                response = await fetch('http://localhost:5000/api/profile/avatar/icon', {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${localStorage.getItem('token')}`
-                    },
-                    body: JSON.stringify({ icon: updatedData.avatar })
-                });
+                endpoint += 'avatar/icon';
+                body = { icon: updatedData.avatar };
             } else {
-                // If updating other profile data
-                response = await fetch('http://localhost:5000/api/profile/update', {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${localStorage.getItem('token')}`
-                    },
-                    body: JSON.stringify(updatedData)
-                });
+                endpoint += 'update';
             }
 
+            const response = await fetch(endpoint, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                },
+                body: JSON.stringify(body)
+            });
+
             const data = await response.json();
-            if (response.ok) {
-                setUser(prev => ({ ...prev, ...updatedData }));
-            } else {
-                throw new Error(data.message);
+            
+            if (!response.ok) {
+                throw new Error(data.message || 'Failed to update profile');
             }
+
+            // Update local user state with the returned data
+            setUser(prev => ({
+                ...prev,
+                ...(updatedData.avatar ? { avatar: data.avatar } : updatedData)
+            }));
+            
+            return data;
         } catch (error) {
             console.error('Error updating profile:', error);
             throw error;

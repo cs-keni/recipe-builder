@@ -1,11 +1,20 @@
 from flask import Flask, request, jsonify
-from flask_cors import CORS
+from flask_cors import CORS, cross_origin
 from werkzeug.security import generate_password_hash, check_password_hash
 import sqlite3
 import os
+from flask_jwt_extended import JWTManager, jwt_required, get_jwt_identity
 
 app = Flask(__name__)
 CORS(app)
+
+# JWT Configuration
+app.config['JWT_SECRET_KEY'] = 'your-secret-key'  # Change this to a secure secret key
+app.config['JWT_TOKEN_LOCATION'] = ['headers']
+app.config['JWT_HEADER_NAME'] = 'Authorization'
+app.config['JWT_HEADER_TYPE'] = 'Bearer'
+
+jwt = JWTManager(app)
 
 # Initialize SQLite database
 def init_db():
@@ -23,6 +32,12 @@ def init_db():
     conn.close()
 
 init_db()
+
+def handle_preflight():
+    response = jsonify({})
+    response.headers.add('Access-Control-Allow-Methods', 'PUT, OPTIONS')
+    response.headers.add('Access-Control-Allow-Headers', 'Content-Type, Authorization')
+    return response
 
 @app.route('/api/register', methods=['POST'])
 def register():
@@ -99,6 +114,29 @@ def login():
         
     except Exception as e:
         return jsonify({"message": str(e)}), 500
+
+@app.route('/api/profile/avatar/icon', methods=['PUT', 'OPTIONS'])
+@jwt_required()
+@cross_origin()
+def update_avatar_icon():
+    if request.method == 'OPTIONS':
+        return handle_preflight()
+        
+    try:
+        current_user_id = get_jwt_identity()
+        data = request.get_json()
+        icon = data.get('icon')
+        
+        user = User.query.get(current_user_id)
+        if not user:
+            return jsonify({'message': 'User not found'}), 404
+            
+        user.avatar = icon
+        db.session.commit()
+        
+        return jsonify({'avatar': user.avatar})
+    except Exception as e:
+        return jsonify({'message': 'Server error', 'error': str(e)}), 500
 
 if __name__ == '__main__':
     app.run(debug=True)

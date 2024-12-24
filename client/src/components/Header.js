@@ -21,12 +21,18 @@ function Header({ user, onLogout, isDarkMode, onToggleDarkMode, onUpdateProfile 
                             <div className={`w-12 h-12 rounded-full flex items-center justify-center text-2xl border-2 ${
                                 isDarkMode ? 'bg-gray-700 border-gray-600' : 'bg-gray-100 border-gray-200'
                             }`}>
-                                {user.avatar && (
-                                    <img 
-                                        src={user.avatar} 
-                                        alt="Profile" 
-                                        className="w-full h-full rounded-full object-cover"
-                                    />
+                                {user.avatar ? (
+                                    user.avatar.startsWith('http') ? (
+                                        <img 
+                                            src={user.avatar} 
+                                            alt="Profile" 
+                                            className="w-full h-full rounded-full object-cover"
+                                        />
+                                    ) : (
+                                        <span className="text-center">{user.avatar}</span>
+                                    )
+                                ) : (
+                                    <span className="text-center">{user.name.charAt(0).toUpperCase()}</span>
                                 )}
                             </div>
                             <h1 className={`text-3xl font-bold ${isDarkMode ? 'text-white' : 'text-gray-800'}`}>
