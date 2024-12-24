@@ -17,18 +17,12 @@ function Header({ user, onLogout, isDarkMode, onToggleDarkMode, onUpdateProfile 
             <nav className={`${isDarkMode ? 'bg-gray-800' : 'bg-white'} shadow-lg`}>
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
                     <div className="flex justify-between items-center">
-                        <div className="flex items-center">
-                            <h1 className={`text-3xl font-bold ${isDarkMode ? 'text-white' : 'text-gray-800'}`}>
-                                Welcome Back, {user.name}
-                            </h1>
-                        </div>
-                        
-                        <div className="relative flex items-center space-x-2">
-                            {user.avatar && (
-                                <div className={`w-8 h-8 rounded-full flex items-center justify-center text-lg ${
-                                    isDarkMode ? 'bg-gray-700' : 'bg-gray-100'
-                                }`}>
-                                    {user.avatar.startsWith('/uploads') ? (
+                        <div className="flex items-center space-x-4">
+                            <div className={`w-12 h-12 rounded-full flex items-center justify-center text-2xl border-2 ${
+                                isDarkMode ? 'bg-gray-700 border-gray-600' : 'bg-gray-100 border-gray-200'
+                            }`}>
+                                {user.avatar ? (
+                                    user.avatar.startsWith('/uploads') ? (
                                         <img 
                                             src={user.avatar} 
                                             alt="Profile" 
@@ -36,9 +30,17 @@ function Header({ user, onLogout, isDarkMode, onToggleDarkMode, onUpdateProfile 
                                         />
                                     ) : (
                                         <span>{user.avatar}</span>
-                                    )}
-                                </div>
-                            )}
+                                    )
+                                ) : (
+                                    <span>👤</span>
+                                )}
+                            </div>
+                            <h1 className={`text-3xl font-bold ${isDarkMode ? 'text-white' : 'text-gray-800'}`}>
+                                Welcome Back, {user.name}
+                            </h1>
+                        </div>
+                        
+                        <div className="relative">
                             <button
                                 onClick={() => setIsMenuOpen(!isMenuOpen)}
                                 className={`p-2 rounded-full hover:bg-gray-100 ${
