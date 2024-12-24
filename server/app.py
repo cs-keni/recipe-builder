@@ -3,13 +3,14 @@ from flask_cors import CORS, cross_origin
 from werkzeug.security import generate_password_hash, check_password_hash
 import sqlite3
 import os
-from flask_jwt_extended import JWTManager, jwt_required, get_jwt_identity
+from flask_jwt_extended import JWTManager, jwt_required, get_jwt_identity, create_access_token
+import secrets
 
 app = Flask(__name__)
 CORS(app)
 
 # JWT Configuration
-app.config['JWT_SECRET_KEY'] = 'your-secret-key'  # Change this to a secure secret key
+app.config['JWT_SECRET_KEY'] = secrets.token_hex(32)  # Generates a secure random key
 app.config['JWT_TOKEN_LOCATION'] = ['headers']
 app.config['JWT_HEADER_NAME'] = 'Authorization'
 app.config['JWT_HEADER_TYPE'] = 'Bearer'
@@ -25,7 +26,8 @@ def init_db():
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             name TEXT NOT NULL,
             email TEXT UNIQUE NOT NULL,
-            password TEXT NOT NULL
+            password TEXT NOT NULL,
+            avatar TEXT
         )
     ''')
     conn.commit()
@@ -125,17 +127,29 @@ def update_avatar_icon():
     try:
         current_user_id = get_jwt_identity()
         data = request.get_json()
-        icon = data.get('icon')
         
-        user = User.query.get(current_user_id)
+        if not data or 'icon' not in data:
+            return jsonify({'message': 'No icon provided'}), 422
+            
+        conn = sqlite3.connect('users.db')
+        c = conn.cursor()
+        
+        # Update the user's avatar in the database
+        c.execute('UPDATE users SET avatar = ? WHERE id = ?', (data['icon'], current_user_id))
+        conn.commit()
+        
+        # Get the updated user data
+        c.execute('SELECT avatar FROM users WHERE id = ?', (current_user_id,))
+        user = c.fetchone()
+        conn.close()
+        
         if not user:
             return jsonify({'message': 'User not found'}), 404
             
-        user.avatar = icon
-        db.session.commit()
+        return jsonify({'avatar': user[0]})
         
-        return jsonify({'avatar': user.avatar})
     except Exception as e:
+        print("Error updating avatar:", str(e))
         return jsonify({'message': 'Server error', 'error': str(e)}), 500
 
 if __name__ == '__main__':

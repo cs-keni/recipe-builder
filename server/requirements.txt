@@ -6,3 +6,4 @@ openai
 python-dotenv
 pytest
 alembic
+flask-jwt-extended
