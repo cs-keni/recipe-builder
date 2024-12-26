@@ -106,12 +106,17 @@ def login():
         if not check_password_hash(user[3], data['password']):
             return jsonify({"message": "Invalid password"}), 401
         
+        # Create access token
+        access_token = create_access_token(identity=user[0])
+        
         return jsonify({
             "user": {
                 "id": user[0],
                 "name": user[1],
-                "email": user[2]
-            }
+                "email": user[2],
+                "avatar": user[4] if len(user) > 4 else None
+            },
+            "token": access_token
         }), 200
         
     except Exception as e:
@@ -127,26 +132,39 @@ def update_avatar_icon():
     try:
         current_user_id = get_jwt_identity()
         data = request.get_json()
+        print("Received data:", data)  # Debug print
         
-        if not data or 'icon' not in data:
+        if not data:
+            return jsonify({'message': 'No data provided'}), 422
+            
+        icon = data.get('icon')
+        if not icon:
             return jsonify({'message': 'No icon provided'}), 422
             
         conn = sqlite3.connect('users.db')
         c = conn.cursor()
         
         # Update the user's avatar in the database
-        c.execute('UPDATE users SET avatar = ? WHERE id = ?', (data['icon'], current_user_id))
+        c.execute('UPDATE users SET avatar = ? WHERE id = ?', (icon, current_user_id))
         conn.commit()
         
         # Get the updated user data
-        c.execute('SELECT avatar FROM users WHERE id = ?', (current_user_id,))
+        c.execute('SELECT * FROM users WHERE id = ?', (current_user_id,))
         user = c.fetchone()
         conn.close()
         
         if not user:
             return jsonify({'message': 'User not found'}), 404
             
-        return jsonify({'avatar': user[0]})
+        return jsonify({
+            'avatar': user[4],
+            'user': {
+                'id': user[0],
+                'name': user[1],
+                'email': user[2],
+                'avatar': user[4]
+            }
+        })
         
     except Exception as e:
         print("Error updating avatar:", str(e))

@@ -45,6 +45,10 @@ function Auth({ onLogin, isDarkMode }) {
             const data = await response.json();
             
             if (response.ok) {
+                // Save the token to localStorage
+                localStorage.setItem('token', data.token);
+                
+                // Call onLogin with user data
                 onLogin(data.user);
             } else {
                 setError(data.message || 'Authentication failed');

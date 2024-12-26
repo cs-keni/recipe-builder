@@ -91,6 +91,7 @@ function App() {
             if (updatedData.avatar) {
                 endpoint += 'avatar/icon';
                 body = { icon: updatedData.avatar };
+                console.log("Sending body:", body);  // Debug log
             } else {
                 endpoint += 'update';
             }
@@ -105,6 +106,7 @@ function App() {
             });
 
             const data = await response.json();
+            console.log("Received response:", data);  // Debug log
             
             if (!response.ok) {
                 throw new Error(data.message || 'Failed to update profile');
@@ -113,7 +115,7 @@ function App() {
             // Update local user state with the returned data
             setUser(prev => ({
                 ...prev,
-                ...(updatedData.avatar ? { avatar: data.avatar } : updatedData)
+                ...(data.user || {})  // Use the full user object if available
             }));
             
             return data;
