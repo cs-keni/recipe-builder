@@ -5,8 +5,16 @@ import sqlite3
 import os
 from flask_jwt_extended import JWTManager, jwt_required, get_jwt_identity, create_access_token
 import secrets
+import sys
+import logging
+
+# Configure logging
+logging.basicConfig(level=logging.DEBUG)
+logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
+app.config['DEBUG'] = True
+app.config['PROPAGATE_EXCEPTIONS'] = True
 CORS(app)
 
 # JWT Configuration
@@ -126,49 +134,65 @@ def login():
 @jwt_required()
 @cross_origin()
 def update_avatar_icon():
+    logger.info("=== Starting Avatar Update Request ===")
+    
     if request.method == 'OPTIONS':
+        logger.info("Handling OPTIONS request")
         return handle_preflight()
-        
+    
     try:
         current_user_id = get_jwt_identity()
-        data = request.get_json()
-        print("Received data:", data)  # Debug print
+        logger.info(f"User ID: {current_user_id}")
+        
+        raw_data = request.get_data().decode('utf-8')
+        logger.info(f"Raw request data: {raw_data}")
+        
+        data = request.get_json(force=True)
+        logger.info(f"Parsed JSON data: {data}")
         
         if not data:
+            logger.error("No data received")
             return jsonify({'message': 'No data provided'}), 422
             
         icon = data.get('icon')
         if not icon:
+            logger.error(f"No icon in data: {data}")
             return jsonify({'message': 'No icon provided'}), 422
             
+        logger.info(f"Processing icon URL: {icon}")
+        
         conn = sqlite3.connect('users.db')
         c = conn.cursor()
         
-        # Update the user's avatar in the database
         c.execute('UPDATE users SET avatar = ? WHERE id = ?', (icon, current_user_id))
         conn.commit()
+        logger.info("Database updated successfully")
         
-        # Get the updated user data
         c.execute('SELECT * FROM users WHERE id = ?', (current_user_id,))
         user = c.fetchone()
         conn.close()
         
         if not user:
+            logger.error(f"User {current_user_id} not found after update")
             return jsonify({'message': 'User not found'}), 404
             
-        return jsonify({
-            'avatar': user[4],
+        response_data = {
             'user': {
                 'id': user[0],
                 'name': user[1],
                 'email': user[2],
                 'avatar': user[4]
             }
-        })
+        }
+        logger.info(f"Sending response: {response_data}")
+        return jsonify(response_data)
         
     except Exception as e:
-        print("Error updating avatar:", str(e))
+        logger.error(f"Error in update_avatar_icon: {str(e)}")
+        logger.error(f"Traceback: {traceback.format_exc()}")
         return jsonify({'message': 'Server error', 'error': str(e)}), 500
 
 if __name__ == '__main__':
+    app.debug = True
+    app.logger.setLevel('DEBUG')
     app.run(debug=True)

@@ -91,22 +91,32 @@ function App() {
             if (updatedData.avatar) {
                 endpoint += 'avatar/icon';
                 body = { icon: updatedData.avatar };
-                console.log("Sending body:", body);  // Debug log
+                console.log("Endpoint:", endpoint);
+                console.log("Request body:", JSON.stringify(body, null, 2));
+                console.log("Selected avatar URL:", updatedData.avatar);
             } else {
                 endpoint += 'update';
             }
 
-            const response = await fetch(endpoint, {
+            const requestOptions = {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${localStorage.getItem('token')}`
                 },
                 body: JSON.stringify(body)
+            };
+            
+            console.log("Full request options:", {
+                ...requestOptions,
+                body: JSON.parse(requestOptions.body)
             });
 
+            const response = await fetch(endpoint, requestOptions);
             const data = await response.json();
-            console.log("Received response:", data);  // Debug log
+            
+            console.log("Response status:", response.status);
+            console.log("Response data:", data);
             
             if (!response.ok) {
                 throw new Error(data.message || 'Failed to update profile');
@@ -115,7 +125,7 @@ function App() {
             // Update local user state with the returned data
             setUser(prev => ({
                 ...prev,
-                ...(data.user || {})  // Use the full user object if available
+                ...(data.user || {})
             }));
             
             return data;
