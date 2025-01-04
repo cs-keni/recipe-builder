@@ -203,7 +203,7 @@ def seed_recipes():
         
         # Add new recipes
         for recipe_data in recipes_data:
-            recipe = Recipe(**recipe_data)
+            recipe = Recipe(**recipe_data, is_seeded=True)
             db.session.add(recipe)
         db.session.commit()
         print(f"Added {len(recipes_data)} recipes to database!")

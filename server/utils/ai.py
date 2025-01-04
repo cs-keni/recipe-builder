@@ -40,7 +40,7 @@ def generate_recipe(ingredients):
     matching_count = scored_recipes[0][1]
     
     return {
-        'name': f"Recipe using {ingredients} ({matching_count} matching ingredients)",
+        'name': f"Recipe with {ingredients}",
         'ingredients': best_recipe.ingredients,
         'instructions': best_recipe.instructions,
         'category': best_recipe.category,
