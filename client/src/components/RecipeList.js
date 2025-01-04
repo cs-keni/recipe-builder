@@ -4,8 +4,16 @@ import { deleteRecipe } from "../api";
 
 function RecipeList({ recipes, onRecipeDeleted }) {
     const handleDelete = async (id) => {
-        await deleteRecipe(id);
-        onRecipeDeleted(id);
+        try {
+            const response = await deleteRecipe(id);
+            if (response.status === 204) {  // Successful deletion
+                onRecipeDeleted(id);
+            } else {
+                console.error("Failed to delete recipe");
+            }
+        } catch (error) {
+            console.error("Error deleting recipe:", error);
+        }
     };
 
     if (recipes.length === 0) {

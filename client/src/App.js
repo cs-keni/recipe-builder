@@ -56,7 +56,14 @@ function App() {
     };
 
     const handleRecipeAdded = (newRecipe) => {
-        setRecipes([...recipes, newRecipe]);
+        // Check if a recipe with the same name already exists
+        const isDuplicate = recipes.some(recipe => 
+            recipe.name.toLowerCase() === newRecipe.name.toLowerCase()
+        );
+        
+        if (!isDuplicate) {
+            setRecipes([...recipes, newRecipe]);
+        }
         setIsFormOpen(false);
     };
 
@@ -64,9 +71,20 @@ function App() {
         setRecipes(recipes.filter((recipe) => recipe.id !== id));
     };
 
-    const handleLogout = () => {
-        setUser(null);
-        setCurrentView('auth');
+    const handleLogout = async () => {
+        try {
+            // Clear recipes from database
+            const recipesToDelete = recipes.filter(recipe => !recipe.is_seeded);
+            await Promise.all(recipesToDelete.map(recipe => deleteRecipe(recipe.id)));
+            
+            // Clear state
+            setUser(null);
+            setCurrentView('auth');
+            setRecipes([]);
+            setFilteredRecipes([]);
+        } catch (error) {
+            console.error("Error clearing recipes:", error);
+        }
     };
 
     const handleSearch = (filters) => {
