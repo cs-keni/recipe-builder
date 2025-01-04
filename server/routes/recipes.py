@@ -2,6 +2,7 @@ from flask import Blueprint, jsonify, request
 from models.recipe import Recipe
 from database import db
 from utils.ai import generate_recipe
+from flask_cors import cross_origin
 
 ai_bp = Blueprint("ai", __name__)
 
@@ -33,9 +34,20 @@ def delete_recipe(id):
     db.session.commit()
     return "", 204
 
-@ai_bp.route("/generate-recipe", methods=["POST"])
+@ai_bp.route("/generate-recipe", methods=["POST", "OPTIONS"])
+@cross_origin()
 def generate():
-    data = request.json
-    ingredients = data.get("ingredients", [])
-    recipe = generate_recipe(ingredients)
-    return jsonify({"recipe": recipe})
+    if request.method == "OPTIONS":
+        return jsonify({"status": "ok"}), 200
+        
+    try:
+        data = request.get_json()
+        ingredients = data.get("ingredients", "")
+        if not ingredients:
+            return jsonify({"error": "No ingredients provided"}), 400
+            
+        recipe = generate_recipe(ingredients)
+        return jsonify({"recipe": recipe})
+    except Exception as e:
+        print(f"Error generating recipe: {str(e)}")
+        return jsonify({"error": str(e)}), 500

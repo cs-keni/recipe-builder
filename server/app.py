@@ -7,6 +7,8 @@ from flask_jwt_extended import JWTManager, jwt_required, get_jwt_identity, creat
 import secrets
 import sys
 import logging
+from routes.recipes import recipes, ai_bp
+from database import db
 
 # Configure logging
 logging.basicConfig(level=logging.DEBUG)
@@ -15,7 +17,18 @@ logger = logging.getLogger(__name__)
 app = Flask(__name__)
 app.config['DEBUG'] = True
 app.config['PROPAGATE_EXCEPTIONS'] = True
-CORS(app)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///recipes.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+CORS(app, resources={
+    r"/*": {
+        "origins": ["http://localhost:3000"],
+        "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+        "allow_headers": ["Content-Type", "Authorization"]
+    }
+})
+
+db.init_app(app)
 
 # JWT Configuration
 app.config['JWT_SECRET_KEY'] = secrets.token_hex(32)  # Generates a secure random key
@@ -191,6 +204,10 @@ def update_avatar_icon():
         logger.error(f"Error in update_avatar_icon: {str(e)}")
         logger.error(f"Traceback: {traceback.format_exc()}")
         return jsonify({'message': 'Server error', 'error': str(e)}), 500
+    
+# Register blueprints
+app.register_blueprint(recipes)
+app.register_blueprint(ai_bp)
 
 if __name__ == '__main__':
     app.debug = True

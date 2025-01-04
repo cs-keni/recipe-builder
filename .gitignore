@@ -1,8 +1,20 @@
-# node.js dependencies
-node_modules/
+# Environment variables
+.env
+.env.*
+!.env.example
 
-# python virtual environment
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+instance/
+
+# Virtual Environment
 venv/
+env/
+
+# Node
+node_modules/
 
 # OS/editor-specific files
 .DS_Store

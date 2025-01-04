@@ -11,15 +11,20 @@ function GenerateRecipeForm({ onRecipeGenerated, isDarkMode }) {
         setIsGenerating(true);
         try {
             const result = await generateRecipe(ingredients);
-            onRecipeGenerated({
-                name: "Recipe from Leftovers",
-                ingredients: ingredients,
-                instructions: result.instructions
-            });
+            if (result.recipe) {
+                onRecipeGenerated({
+                    name: "AI Generated Recipe",
+                    ingredients: ingredients,
+                    instructions: result.recipe
+                });
+            } else {
+                console.error("No recipe generated:", result);
+            }
         } catch (error) {
             console.error("Error generating recipe:", error);
+        } finally {
+            setIsGenerating(false);
         }
-        setIsGenerating(false);
     };
 
     return (
