@@ -46,8 +46,16 @@ def generate():
         if not ingredients:
             return jsonify({"error": "No ingredients provided"}), 400
             
-        recipe = generate_recipe(ingredients)
-        return jsonify({"recipe": recipe})
+        recipe_data = generate_recipe(ingredients)
+        if recipe_data is None:
+            return jsonify({"error": "No recipes found with those ingredients"}), 404
+            
+        # Create a new recipe in the database
+        recipe = Recipe(**recipe_data)
+        db.session.add(recipe)
+        db.session.commit()
+        
+        return jsonify({"recipe": recipe.to_dict()})
     except Exception as e:
         print(f"Error generating recipe: {str(e)}")
         return jsonify({"error": str(e)}), 500

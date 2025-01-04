@@ -27,22 +27,22 @@ def generate_recipe(ingredients):
     for recipe in all_recipes:
         recipe_ingredients = [i.strip().lower() for i in recipe.ingredients.split(',')]
         matching_ingredients = len(set(ingredient_list) & set(recipe_ingredients))
-        if matching_ingredients > 0: # Only include recipes with at least one matching ingredient
-            scored_recipes.append((recipe, matching_ingredients))
+        # Include all recipes, even with 0 matches
+        scored_recipes.append((recipe, matching_ingredients))
     
     # Sort by number of matching ingredients
     scored_recipes.sort(key=lambda x: x[1], reverse=True)
-
-    if not scored_recipes:
-        return "No recipes found with those ingredients."
     
-    # Get the best matching recipe
+    # Get the best matching recipe (will always have at least one recipe)
     best_recipe = scored_recipes[0][0]
-    return (
-        f"Recipe: {best_recipe.name}\n\n"
-        f"Ingredients:\n{best_recipe.ingredients}\n\n"
-        f"Instructions:\n{best_recipe.instructions}"
-    )
+    return {
+        'name': f"Recipe with {ingredients}",
+        'ingredients': best_recipe.ingredients,
+        'instructions': best_recipe.instructions,
+        'category': best_recipe.category,
+        'difficulty': best_recipe.difficulty,
+        'cooking_time': best_recipe.cooking_time
+    }
 
 """
 # Get the directory containing this file
