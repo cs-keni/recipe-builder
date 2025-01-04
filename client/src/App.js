@@ -1,7 +1,7 @@
 import './App.css';
 import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from 'framer-motion';
-import { getRecipes } from "./api";
+import { getRecipes, deleteRecipe } from "./api";
 import RecipeForm from "./components/RecipeForm";
 import RecipeList from "./components/RecipeList";
 import Welcome from "./components/Welcome";
@@ -153,6 +153,17 @@ function App() {
         }
     };
 
+    const handleClearAllRecipes = async () => {
+        try {
+            // Delete all non-seeded recipes
+            const recipesToDelete = recipes.filter(recipe => !recipe.is_seeded);
+            await Promise.all(recipesToDelete.map(recipe => deleteRecipe(recipe.id)));
+            setRecipes([]);
+        } catch (error) {
+            console.error("Error clearing recipes:", error);
+        }
+    };
+
     return (
         <div style={{ position: 'relative' }}>
             <AnimatePresence mode="wait">
@@ -224,9 +235,25 @@ function App() {
                                     {/* Left sidebar - Recipe List */}
                                     <div className="lg:col-span-1">
                                         <div className={`${isDarkMode ? 'bg-gray-800' : 'bg-white'} rounded-lg shadow-lg p-6`}>
-                                            <h2 className={`text-xl font-semibold mb-4 ${isDarkMode ? 'text-white' : 'text-gray-800'}`}>
-                                                Your Recipes
-                                            </h2>
+                                            <div className="flex justify-between items-center mb-4">
+                                                <h2 className={`text-xl font-semibold ${isDarkMode ? 'text-white' : 'text-gray-800'}`}>
+                                                    Your Recipes
+                                                </h2>
+                                                {recipes.length > 0 && (
+                                                    <motion.button
+                                                        whileHover={{ scale: 1.05 }}
+                                                        whileTap={{ scale: 0.95 }}
+                                                        onClick={handleClearAllRecipes}
+                                                        className={`text-sm px-3 py-1 rounded ${
+                                                            isDarkMode 
+                                                                ? 'bg-red-600 hover:bg-red-700 text-white' 
+                                                                : 'bg-red-500 hover:bg-red-600 text-white'
+                                                        }`}
+                                                    >
+                                                        Clear All
+                                                    </motion.button>
+                                                )}
+                                            </div>
                                             {recipes.length === 0 ? (
                                                 <p className={`text-center ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
                                                     No Recipes Added Yet
