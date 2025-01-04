@@ -6,6 +6,9 @@ import requests
 import openai  # Keep this import for future use
 from models.recipe import Recipe
 from database import db
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
+import numpy as np
 
 """NO API BECAUSE OPENAI "FREE TIER" ISN'T FREE AND SPOONACULAR GIVES ONE REQUEST FREE
 
@@ -176,3 +179,26 @@ def generate_recipe(ingredients):
         print(f"Error calling OpenAI API: {str(e)}")
         raise ValueError(f"Failed to generate recipe: {str(e)}")
 """
+
+class RecipeRecommender:
+    def __init__(self):
+        self.vectorizer = TfidfVectorizer(stop_words='english')
+        self.recipe_vectors = None
+        self.recipes = []
+
+    def train(self, recipes):
+        # Prepare training data
+        self.recipes = recipes
+        ingredient_texts = [r.ingredients.lower() for r in recipes]
+        self.recipe_vectors = self.vectorizer.fit_transform(ingredient_texts)
+
+    def recommend(self, ingredients):
+        # Transform input ingredients
+        input_vector = self.vectorizer.transform([ingredients.lower()])
+        
+        # Calculate similarity scores
+        similarities = cosine_similarity(input_vector, self.recipe_vectors)
+        
+        # Get top matches
+        top_indices = similarities[0].argsort()[-3:][::-1]
+        return [self.recipes[i] for i in top_indices]
