@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-const RecipeModal = ({ isOpen, onClose, recipe }) => {
+const RecipeModal = ({ isOpen, onClose, recipe, isDarkMode }) => {
     // Lock scroll when modal is open
     useEffect(() => {
         if (isOpen) {
@@ -65,7 +65,7 @@ const RecipeModal = ({ isOpen, onClose, recipe }) => {
                     onClick={onClose}
                 >
                     <motion.div
-                        className="bg-white dark:bg-gray-800 p-6 rounded-lg max-w-2xl w-full mx-4 max-h-[80vh] overflow-y-auto"
+                        className={`${isDarkMode ? 'bg-gray-800' : 'bg-white'} p-6 rounded-lg max-w-2xl w-full mx-4 max-h-[80vh] overflow-y-auto`}
                         style={{
                             marginTop: '-10vh' // Adjust this value to move modal higher
                         }}
@@ -75,7 +75,9 @@ const RecipeModal = ({ isOpen, onClose, recipe }) => {
                         exit="exit"
                         onClick={e => e.stopPropagation()}
                     >
-                        <h2 className="text-2xl font-bold mb-4 dark:text-white">{recipe.name}</h2>
+                        <h2 className={`text-2xl font-bold mb-4 ${isDarkMode ? 'text-white' : 'text-gray-800'}`}>
+                            {recipe.name}
+                        </h2>
                         
                         <div className="mb-4">
                             <span className="inline-block bg-blue-100 text-blue-800 px-2 py-1 rounded mr-2">
@@ -90,8 +92,10 @@ const RecipeModal = ({ isOpen, onClose, recipe }) => {
                         </div>
 
                         <div className="mb-4">
-                            <h3 className="text-lg font-semibold mb-2 dark:text-white">Ingredients:</h3>
-                            <ul className="list-disc pl-5 dark:text-gray-300">
+                            <h3 className={`text-lg font-semibold mb-2 ${isDarkMode ? 'text-white' : 'text-gray-800'}`}>
+                                Ingredients:
+                            </h3>
+                            <ul className={`list-disc pl-5 ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
                                 {recipe.ingredients.split(',').map((ingredient, index) => (
                                     <li key={index}>{ingredient.trim()}</li>
                                 ))}
@@ -99,8 +103,10 @@ const RecipeModal = ({ isOpen, onClose, recipe }) => {
                         </div>
 
                         <div className="mb-4">
-                            <h3 className="text-lg font-semibold mb-2 dark:text-white">Instructions:</h3>
-                            <ol className="list-decimal pl-5 dark:text-gray-300">
+                            <h3 className={`text-lg font-semibold mb-2 ${isDarkMode ? 'text-white' : 'text-gray-800'}`}>
+                                Instructions:
+                            </h3>
+                            <ol className={`list-decimal pl-5 ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
                                 {recipe.instructions.split('\n').map((instruction, index) => (
                                     <li key={index}>{instruction.replace(/^\d+\.\s*/, '')}</li>
                                 ))}

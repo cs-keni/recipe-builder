@@ -76,6 +76,7 @@ function GenerateRecipeForm({ onRecipeGenerated, isDarkMode }) {
                     isOpen={showModal}
                     onClose={() => setShowModal(false)}
                     recipe={generatedRecipe}
+                    isDarkMode={isDarkMode}
                 />
             )}
         </>
