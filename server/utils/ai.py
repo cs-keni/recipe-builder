@@ -4,7 +4,47 @@ from dotenv import load_dotenv
 from pathlib import Path
 import requests
 import openai  # Keep this import for future use
+from models.recipe import Recipe
+from database import db
 
+"""NO API BECAUSE OPENAI "FREE TIER" ISN'T FREE AND SPOONACULAR GIVES ONE REQUEST FREE
+
+so i'm making my own recipe database.
+all comments below are the previous implementations if i ever decide to subscribe for higher tier
+"""
+
+def generate_recipe(ingredients):
+    print(f"Finding recipe for ingredients: {ingredients}")
+
+    # Convert input ingredients to a list
+    ingredient_list = [i.strip().lower() for i in ingredients.split(',')]
+
+    # Query all recipes from database
+    all_recipes = Recipe.query.all()
+
+    # Scoring system for each recipe based on matching ingredients
+    scored_recipes = []
+    for recipe in all_recipes:
+        recipe_ingredients = [i.strip().lower() for i in recipe.ingredients.split(',')]
+        matching_ingredients = len(set(ingredient_list) & set(recipe_ingredients))
+        if matching_ingredients > 0: # Only include recipes with at least one matching ingredient
+            scored_recipes.append((recipe, matching_ingredients))
+    
+    # Sort by number of matching ingredients
+    scored_recipes.sort(key=lambda x: x[1], reverse=True)
+
+    if not scored_recipes:
+        return "No recipes found with those ingredients."
+    
+    # Get the best matching recipe
+    best_recipe = scored_recipes[0][0]
+    return (
+        f"Recipe: {best_recipe.name}\n\n"
+        f"Ingredients:\n{best_recipe.ingredients}\n\n"
+        f"Instructions:\n{best_recipe.instructions}"
+    )
+
+"""
 # Get the directory containing this file
 current_dir = Path(__file__).parent.parent
 env_path = current_dir / '.env'
@@ -12,7 +52,7 @@ env_path = current_dir / '.env'
 print(f"Current directory: {current_dir}")
 print(f"Looking for .env file at: {env_path}")
 print(f"Does .env file exist? {env_path.exists()}")
-
+"""
 """
 # Try to read the .env file contents directly
 try:
@@ -35,7 +75,7 @@ if api_key:
 else:
     print("OpenAI API key not found in environment")
 """
-
+"""
 # Load environment variables from .env file
 load_dotenv(dotenv_path=env_path)
 
@@ -91,8 +131,13 @@ def generate_recipe(ingredients):
         return recipe_text
         
     except requests.exceptions.RequestException as e:
-        print(f"Error calling Spoonacular API: {str(e)}")
-        raise ValueError(f"Failed to generate recipe: {str(e)}")
+        if e.response.status_code == 401:
+            print("Invalid or expired Spoonacular API key")
+            raise ValueError("API key is invalid or expired. Please check your Spoonacular API key.")
+        else:
+            print(f"Error calling Spoonacular API: {str(e)}")
+            raise ValueError(f"Failed to generate recipe: {str(e)}")
+"""
 """
 def generate_recipe(ingredients):
     # Set the API key for the OpenAI client
