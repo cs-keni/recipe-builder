@@ -21,54 +21,24 @@ need to implement machine learning model (use collaborative filtering, content-b
 TODO: collect more recipe data for training
 TODO: periodically retrain model"""
 def generate_recipe(ingredients):
-    print(f"Finding recipe for ingredients: {ingredients}")
+    recommender = RecipeRecommender()
+    recommender.train()
     
-    ingredient_list = [i.strip().lower() for i in ingredients.split(',')]
-    all_recipes = Recipe.query.all()
-    
-    if not all_recipes:
-        raise ValueError("No recipes in database")
-    
-    # Get recipe stats
-    recipe_stats = {stat.recipe_id: stat for stat in RecipeStats.query.all()}
-    
-    # Enhanced scoring system
-    scored_recipes = []
-    for recipe in all_recipes:
-        recipe_ingredients = [i.strip().lower() for i in recipe.ingredients.split(',')]
-        matching_ingredients = len(set(ingredient_list) & set(recipe_ingredients))
+    recommended_recipes = recommender.recommend(ingredients)
+    if not recommended_recipes:
+        raise ValueError("No recipes found")
         
-        # Calculate score based on matches and popularity
-        base_score = matching_ingredients
-        stats = recipe_stats.get(recipe.id)
-        if stats:
-            popularity_boost = (stats.rating * 0.3) + (stats.times_generated * 0.1)
-            final_score = base_score + popularity_boost
-        else:
-            final_score = base_score
-            
-        scored_recipes.append((recipe, final_score))
-    
-    # Sort by score
-    scored_recipes.sort(key=lambda x: x[1], reverse=True)
-    best_recipe = scored_recipes[0][0]
+    best_recipe = recommended_recipes[0]
     
     # Update statistics
-    stats = recipe_stats.get(best_recipe.id)
+    stats = RecipeStats.query.filter_by(recipe_id=best_recipe.id).first()
     if not stats:
         stats = RecipeStats(recipe_id=best_recipe.id)
         db.session.add(stats)
-    stats.times_generated += 1
+    stats.times_generated = (stats.times_generated or 0) + 1
     db.session.commit()
     
-    return {
-        'name': f"Recipe with {ingredients}",
-        'ingredients': best_recipe.ingredients,
-        'instructions': best_recipe.instructions,
-        'category': best_recipe.category,
-        'difficulty': best_recipe.difficulty,
-        'cooking_time': best_recipe.cooking_time
-    }
+    return best_recipe.to_dict()
 
 """
 # Get the directory containing this file
