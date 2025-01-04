@@ -8,6 +8,7 @@ class Recipe(db.Model):
     category = db.Column(db.String(50), default='main')
     difficulty = db.Column(db.String(50), default='medium')
     cooking_time = db.Column(db.Integer, default=30)
+    is_seeded = db.Column(db.Boolean, default=False)
 
     def to_dict(self):
         return {
@@ -17,5 +18,6 @@ class Recipe(db.Model):
             'instructions': self.instructions,
             'category': self.category,
             'difficulty': self.difficulty,
-            'cookingTime': self.cooking_time
+            'cooking_time': self.cooking_time,
+            'is_seeded': self.is_seeded
         }
