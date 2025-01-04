@@ -21,22 +21,26 @@ def generate_recipe(ingredients):
 
     # Query all recipes from database
     all_recipes = Recipe.query.all()
+    
+    if not all_recipes:
+        raise ValueError("No recipes in database")
 
     # Scoring system for each recipe based on matching ingredients
     scored_recipes = []
     for recipe in all_recipes:
         recipe_ingredients = [i.strip().lower() for i in recipe.ingredients.split(',')]
         matching_ingredients = len(set(ingredient_list) & set(recipe_ingredients))
-        # Include all recipes, even with 0 matches
         scored_recipes.append((recipe, matching_ingredients))
     
     # Sort by number of matching ingredients
     scored_recipes.sort(key=lambda x: x[1], reverse=True)
     
-    # Get the best matching recipe (will always have at least one recipe)
-    best_recipe = scored_recipes[0][0]
+    # Get the best matching recipe
+    best_recipe = scored_recipes[0][0]  # Safe now because we checked all_recipes
+    matching_count = scored_recipes[0][1]
+    
     return {
-        'name': f"Recipe with {ingredients}",
+        'name': f"Recipe using {ingredients} ({matching_count} matching ingredients)",
         'ingredients': best_recipe.ingredients,
         'instructions': best_recipe.instructions,
         'category': best_recipe.category,
