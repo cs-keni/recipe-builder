@@ -53,3 +53,12 @@ export const generateRecipe = async (ingredients) => {
     }
     return response.json();
 };
+
+export const rateRecipe = async (id, rating) => {
+    const response = await fetch(`${API_BASE}/api/recipes/${id}/rate`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ rating }),
+    });
+    return response.json();
+};
