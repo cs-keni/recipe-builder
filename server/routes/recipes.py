@@ -3,6 +3,7 @@ from models.recipe import Recipe
 from database import db
 from utils.ai import generate_recipe
 from flask_cors import cross_origin
+from models.recipe_stats import RecipeStats
 
 ai_bp = Blueprint("ai", __name__)
 
@@ -35,6 +36,30 @@ def delete_recipe(id):
     db.session.delete(recipe)
     db.session.commit()
     return "", 204
+
+@recipes.route("/api/recipes/<int:id>/rate", methods=["POST"])
+def rate_recipe(id):
+    data = request.json
+    rating = data.get("rating")
+    if not rating or not (1 <= rating <= 5):
+        return jsonify({"error": "Invalid rating"}), 400
+        
+    recipe = Recipe.query.get_or_404(id)
+    stats = RecipeStats.query.filter_by(recipe_id=id).first()
+    
+    if not stats:
+        stats = RecipeStats(recipe_id=id)
+        db.session.add(stats)
+    
+    stats.rating = (stats.rating + rating) / 2  # Running average
+    stats.times_rated = (stats.times_rated or 0) + 1
+    
+    # Learn from ingredient combinations
+    ingredient_list = [i.strip().lower() for i in recipe.ingredients.split(',')]
+    stats.ingredient_combinations = ','.join(ingredient_list)
+    
+    db.session.commit()
+    return jsonify({"success": True})
 
 @ai_bp.route("/generate-recipe", methods=["POST", "OPTIONS"])
 @cross_origin()
