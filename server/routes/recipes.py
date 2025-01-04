@@ -10,7 +10,9 @@ recipes = Blueprint("recipes", __name__)
 
 @recipes.route("/api/recipes", methods=["GET"])
 def get_recipes():
-    return jsonify([recipe.to_dict() for recipe in Recipe.query.all()])
+    # Only return non-seeded recipes (user's recipes)
+    user_recipes = Recipe.query.filter_by(is_seeded=False).all()
+    return jsonify([recipe.to_dict() for recipe in user_recipes])
 
 @recipes.route("/api/recipes", methods=["POST"])
 def add_recipe():
