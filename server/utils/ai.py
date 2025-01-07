@@ -9,6 +9,8 @@ from database import db
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 import numpy as np
+from apscheduler.schedulers.background import BackgroundScheduler
+from datetime import datetime, timedelta
 
 """NO API BECAUSE OPENAI "FREE TIER" ISN'T FREE AND SPOONACULAR GIVES ONE REQUEST FREE
 
@@ -212,3 +214,27 @@ class RecipeRecommender:
         # Get top recommendations
         top_indices = np.argsort(final_scores)[-top_k:][::-1]
         return [self.recipes[i] for i in top_indices]
+
+class ModelTrainer:
+    def __init__(self):
+        self.recommender = RecipeRecommender()
+        self.scheduler = BackgroundScheduler()
+        self.setup_scheduler()
+
+    def setup_scheduler(self):
+        # Train model every 24 hours
+        self.scheduler.add_job(
+            self.train_model,
+            'interval',
+            hours=24,
+            next_run_time=datetime.now()
+        )
+        self.scheduler.start()
+
+    def train_model(self):
+        print("Starting model training...")
+        self.recommender.train()
+        print("Model training completed")
+
+# Initialize trainer when server starts
+trainer = ModelTrainer()

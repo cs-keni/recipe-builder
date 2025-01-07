@@ -1,8 +1,9 @@
 import React from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { deleteRecipe } from "../api";
+import { deleteRecipe, rateRecipe } from "../api";
+import Rating from './Rating';
 
-function RecipeList({ recipes, onRecipeDeleted }) {
+function RecipeList({ recipes, onRecipeDeleted, isDarkMode }) {
     const handleDelete = async (id) => {
         try {
             const response = await deleteRecipe(id);
@@ -13,6 +14,14 @@ function RecipeList({ recipes, onRecipeDeleted }) {
             }
         } catch (error) {
             console.error("Error deleting recipe:", error);
+        }
+    };
+
+    const handleRate = async (recipeId, rating) => {
+        try {
+            await rateRecipe(recipeId, rating);
+        } catch (error) {
+            console.error("Error rating recipe:", error);
         }
     };
 
@@ -61,6 +70,15 @@ function RecipeList({ recipes, onRecipeDeleted }) {
                                 >
                                     Delete Recipe
                                 </motion.button>
+                            </div>
+
+                            <div className="mt-4 border-t pt-4">
+                                <p className="text-sm text-gray-600 mb-2">Rate this recipe:</p>
+                                <Rating 
+                                    recipeId={recipe.id}
+                                    onRate={handleRate}
+                                    isDarkMode={isDarkMode}
+                                />
                             </div>
                         </div>
                     </motion.div>
