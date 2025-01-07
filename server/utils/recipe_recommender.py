@@ -31,3 +31,25 @@ class RecipeRecommender:
             'categories': categories,
             'ingredient_data': {i.ingredient_name: i for i in ingredient_data}
         } 
+
+    def calculate_similarity(self, user_ingredients, preprocessed_data):
+        # Convert user ingredients to vector
+        user_vector = self.vectorizer.transform([user_ingredients.lower()])
+        
+        # Calculate content similarity
+        content_sim = cosine_similarity(user_vector, preprocessed_data['ingredients_matrix'])[0]
+        
+        # Calculate ingredient compatibility
+        compatibility = self._calculate_ingredient_compatibility(
+            user_ingredients,
+            preprocessed_data['ingredient_data']
+        )
+        
+        # Combine scores
+        final_scores = (
+            0.6 * content_sim +           # Content similarity
+            0.2 * compatibility +         # Ingredient compatibility
+            0.2 * preprocessed_data['ratings']  # Recipe ratings
+        )
+        
+        return final_scores 
